@@ -1,0 +1,45 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>  
+<head>  
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">  
+<title>postJsonTest</title>  
+<script type="text/javascript" src="../js/jquery-2.1.4.min.js"></script> 
+<script type="text/javascript" src="../js/json2.js"></script>
+<script type="text/javascript">  
+    function userinfo(username,password){  
+        this.username=username;  
+        this.password=password;  
+        }  
+    function sendAjax(){
+    	alert("ok");
+        var userinfoRef=new userinfo('高玮','12312');  
+        var jsonStringRef=JSON.stringify(userinfoRef);
+        $("div").html("div Show");
+        alert(jsonStringRef);
+        
+        $.ajax({
+            type: "POST",
+            url: "../../nbapi/apisampleJSON.api",
+            data: jsonStringRef,
+            dataType: "json",
+            success: function(data){
+            			alert(data.name);
+                        $("div").html(data.name);
+                     },
+            error: function(XMLHttpRequest, textStatus, errorThrown){
+                alert(errorThrown);
+             },
+            complete: function(XMLHttpRequest, textStatus){
+                 $("div").html(testStatus);
+             }
+        });
+        
+        alert("end");
+        }
+</script>
+</head>
+<body>  
+    <input type="button" onclick="sendAjax()" value="POSTJSON" >  
+    <div id="div"></div>
+</body>  
+</html>  
