@@ -1,4 +1,4 @@
-package database.basicFunctions.dao;
+package database.dao;
 
 import database.common.BaseDao;
 import database.models.NbUserExternalCall;

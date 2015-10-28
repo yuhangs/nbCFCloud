@@ -4,14 +4,14 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
 
-import main.entry.api.ParameterDefine;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import common.definitions.ParameterDefine;
+import common.definitions.ReturnCode;
 import common.helper.nbReturn;
 import common.helper.nbStringUtil;
-import database.basicFunctions.dao.ApplicationsDao;
+import database.dao.ApplicationsDao;
 
 @Service("applicationsService")
 public class ApplicationsServiceImpl implements ApplicationsService {
@@ -37,7 +37,7 @@ public class ApplicationsServiceImpl implements ApplicationsService {
 		Calendar cal = Calendar.getInstance();
 		if( ( cal.getTime().getTime() - parameterDate.getTime() ) > 5000  ){
 			// 如果传进来的timestamp是5秒之前的话，系统将视此次signature为无效的
-			nbRet.setError(nbReturn.ReturnCode.SIGNATURE_WRONG);
+			nbRet.setError(ReturnCode.SIGNATURE_WRONG);
 			return nbRet;
 		}
 		
@@ -51,7 +51,7 @@ public class ApplicationsServiceImpl implements ApplicationsService {
 		if( correctSignature.equals(Signature) ){
 			nbRet.setObject(Boolean.valueOf(true));
 		}else{
-			nbRet.setError(nbReturn.ReturnCode.SIGNATURE_WRONG);
+			nbRet.setError(ReturnCode.SIGNATURE_WRONG);
 			nbRet.setObject(Boolean.valueOf(false));
 		}
 		
@@ -71,7 +71,7 @@ public class ApplicationsServiceImpl implements ApplicationsService {
 	public nbReturn checkSignature(Map<String, Object> jsonMap) throws Exception {
 		nbReturn nbRet = new nbReturn();
 		if( jsonMap == null ){
-			nbRet.setError(nbReturn.ReturnCode.NECESSARY_PARAMETER_IS_NULL);
+			nbRet.setError(ReturnCode.NECESSARY_PARAMETER_IS_NULL);
 			return nbRet;
 		}
 		
@@ -99,8 +99,7 @@ public class ApplicationsServiceImpl implements ApplicationsService {
 	@Override
 	public nbReturn generatePictureCode(String reasonCode, String reasonComments) {
 		
-		//TODO
-		//这里要完成内容，生成图片验证码的流，以及图片验证码事件ID，以及图片验证码的有效时间和过期时间
+		//TODO: 生成图片验证码的流，以及图片验证码事件ID，以及图片验证码的有效时间和过期时间
 //		retCode
 //		retMessage
 //		retContent{
@@ -127,13 +126,25 @@ public class ApplicationsServiceImpl implements ApplicationsService {
      */
 	@SuppressWarnings("unused")
 	@Override
-	public nbReturn checkPictureCode(Map<String, Object> jsonMap) {
+	public nbReturn checkPictureCode(Map<String, Object> jsonMap, boolean parameterNullAsOK) {
 
+		nbReturn nbRet = new nbReturn();
 		String pictureCode = (String) jsonMap.get(ParameterDefine.PICTURECODE);
 		String pictureCodeAffairId = (String) jsonMap.get(ParameterDefine.PICUTRECODEAFFAIRID);
 		String timeStamp = (String)jsonMap.get(ParameterDefine.TIMESTAMP);
-		// TODO 
-		// 这里要验证传进来的图片验证码code是否正确，以及在时间上是否还有效
+		
+		if( (pictureCode==null || pictureCode.length() == 0 ) ||
+			(pictureCodeAffairId == null || pictureCodeAffairId.length() == 0) ){
+			if( parameterNullAsOK){
+				nbRet.setError(ReturnCode._SUCCESS);
+				return nbRet;
+			}else{
+				nbRet.setError(ReturnCode.NECESSARY_PARAMETER_IS_NULL);
+				return nbRet;
+			}
+		}
+		
+		// TODO:这里要验证传进来的图片验证码code是否正确，以及在时间上是否还有效
 		
 		return null;
 	}
@@ -155,7 +166,7 @@ public class ApplicationsServiceImpl implements ApplicationsService {
 		
 		nbReturn nbRet = new nbReturn();
 		if( jsonMap == null ){
-			nbRet.setError(nbReturn.ReturnCode.NECESSARY_PARAMETER_IS_NULL);
+			nbRet.setError(ReturnCode.NECESSARY_PARAMETER_IS_NULL);
 			return nbRet;
 		}
 		
@@ -213,16 +224,29 @@ public class ApplicationsServiceImpl implements ApplicationsService {
 	}
 
 	@Override
-	public nbReturn checkPhoneCode(Map<String, Object> jsonMap) {
+	public nbReturn checkPhoneCode(Map<String, Object> jsonMap, boolean parameterNullAsOK) {
 		
 		nbReturn nbRet = new nbReturn();
 		if( jsonMap == null ){
-			nbRet.setError(nbReturn.ReturnCode.NECESSARY_PARAMETER_IS_NULL);
+			nbRet.setError(ReturnCode.NECESSARY_PARAMETER_IS_NULL);
 			return nbRet;
 		}
 		
 		String phoneCheckAffairid = (String) jsonMap.get(ParameterDefine.PHONECHECKAFFAIRID);
 		String phoneCheckCode = (String) jsonMap.get(ParameterDefine.PHONECHECKCODE);
+		
+		if( (phoneCheckAffairid==null || phoneCheckAffairid.length() == 0 ) ||
+			(phoneCheckCode == null || phoneCheckCode.length() == 0) ){
+			
+			if( parameterNullAsOK){
+				nbRet.setError(ReturnCode._SUCCESS);
+				return nbRet;
+			}else{
+				nbRet.setError(ReturnCode.NECESSARY_PARAMETER_IS_NULL);
+				return nbRet;
+			}
+			
+		}
 	
 		return checkPhoneCode(phoneCheckAffairid, phoneCheckCode);
 	}

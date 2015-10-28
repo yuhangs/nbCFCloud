@@ -1,4 +1,4 @@
-package common.helper;
+package common.filters;
 
 import org.hibernate.EmptyInterceptor;
 

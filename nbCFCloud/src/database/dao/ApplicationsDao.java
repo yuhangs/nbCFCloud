@@ -1,4 +1,4 @@
-package database.basicFunctions.dao;
+package database.dao;
 
 import common.helper.nbReturn;
 import database.common.BaseDao;

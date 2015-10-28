@@ -10,6 +10,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import service.basicFunctions.UserInfoService;
+import common.definitions.ParameterDefine;
+import common.definitions.ReturnCode;
 import common.helper.HttpWebIOHelper;
 import common.helper.nbReturn;
 import database.models.NbTokenPublisher;
@@ -23,7 +25,7 @@ public class SecuredAPIs {
 	 @RequestMapping(value = "/securedAPI/opExtraUserAttributes") 
 	 public void opExtraUserAttibute(HttpServletResponse response,HttpServletRequest request) throws Exception{
 		 
-		 NbTokenPublisher nbTokenPublisher= (NbTokenPublisher)request.getAttribute("filterGetTokenPublisher");
+		 NbTokenPublisher nbTokenPublisher= (NbTokenPublisher)request.getSession().getAttribute(ParameterDefine.SESSION_TOKEN_INFO);
 		 
 		 Map<String, Object> jsonMap = HttpWebIOHelper.servletInputStream2JsonMap(request);
 		 nbReturn nbRet = new nbReturn();
@@ -33,8 +35,7 @@ public class SecuredAPIs {
 			
 			 //token的有效性由filter来检验了，不需要再在API中检验，但要从token获取appID和userID
 			 
-			 //开始增删改查用户扩展信息
-			 //TODO:
+			 //TODO:开始增删改查用户扩展信息
 			 
 //			 nbRet = userInfoService.operateExtraInfo( 	nbTokenPublisher.getApplicationId(),
 //					 									nbTokenPublisher.getNbUser(),
@@ -43,7 +44,7 @@ public class SecuredAPIs {
 //					 									OperationFlags.USER_EXTRA_ATTRIBUTE_ADD);
 				
 			}else{
-				nbRet.setError(nbReturn.ReturnCode.PARAMETER_PHARSE_ERROR);
+				nbRet.setError(ReturnCode.PARAMETER_PHARSE_ERROR);
 			}
 			
 			HttpWebIOHelper.printReturnJson(nbRet, response);

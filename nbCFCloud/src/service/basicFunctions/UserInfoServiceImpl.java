@@ -4,20 +4,19 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
 
-import main.entry.api.ParameterDefine;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import common.definitions.ParameterDefine;
+import common.definitions.ReturnCode;
 import common.helper.nbReturn;
 import common.helper.nbStringUtil;
 import service.common.ScheduledService;
-import database.basicFunctions.dao.TokenPublishDao;
-import database.basicFunctions.dao.UserExternalCallDao;
-import database.basicFunctions.dao.UserInfoDao;
+import database.dao.TokenPublishDao;
+import database.dao.UserExternalCallDao;
+import database.dao.UserInfoDao;
 import database.models.NbTokenPublisher;
 import database.models.NbUser;
-import database.models.NbUserExternalCall;
 
 @Service("userInfoService")
 public class UserInfoServiceImpl implements UserInfoService{
@@ -41,7 +40,7 @@ public class UserInfoServiceImpl implements UserInfoService{
 	public nbReturn verifyUser(Map<String, Object> jsonMap) throws Exception {
 		nbReturn nbRet = new nbReturn();
 		if( jsonMap == null ){
-			nbRet.setError(nbReturn.ReturnCode.NECESSARY_PARAMETER_IS_NULL);
+			nbRet.setError(ReturnCode.NECESSARY_PARAMETER_IS_NULL);
 			return nbRet;
 		}
 		
@@ -79,7 +78,7 @@ public class UserInfoServiceImpl implements UserInfoService{
 		if( lifecycleSec < 60l) lifecycleSec = 60l;
 		if( lifecycleSec > 14400l ) lifecycleSec = 14400l;
 		if( appID == null ) {
-			nbRet.setError(nbReturn.ReturnCode.MISSING_APPID);
+			nbRet.setError(ReturnCode.MISSING_APPID);
 			return nbRet;
 		}
 		if( clientUuid == null ) clientUuid = "none";
@@ -89,7 +88,7 @@ public class UserInfoServiceImpl implements UserInfoService{
 		NbTokenPublisher nbTokenPublish;
 		
 		if( nbUser == null ){ //用户认证失败
-			nbRet.setError(nbReturn.ReturnCode.USERNAME_PASSWORD_ERROR);
+			nbRet.setError(ReturnCode.USERNAME_PASSWORD_ERROR);
 		}else{ //用户认证成功
 			
 			nbRet.setObject(nbUser);
@@ -105,7 +104,7 @@ public class UserInfoServiceImpl implements UserInfoService{
 					
 				}
 				else{//创建失败了
-					nbRet.setError(nbReturn.ReturnCode.CREATE_TOKEN_ERROR);
+					nbRet.setError(ReturnCode.CREATE_TOKEN_ERROR);
 				}
 			}
 
@@ -132,7 +131,7 @@ public class UserInfoServiceImpl implements UserInfoService{
 		
 		//错误处理开始
 		if( nbTokenPublish == null ){//没有这个token
-			nbRet.setError(nbReturn.ReturnCode.TOKEN_NOT_EXIST);
+			nbRet.setError(ReturnCode.TOKEN_NOT_EXIST);
 			
 		}else{
 			
@@ -141,7 +140,7 @@ public class UserInfoServiceImpl implements UserInfoService{
 			Long milSec = currentDate.getTime() - toBeExpired.getTime();
 			
 			if( milSec > (nbTokenPublish.getTokenLifecycleSec()*1000) ){ // expired
-				nbRet.setError(nbReturn.ReturnCode.TOKEN_EXPIRED);
+				nbRet.setError(ReturnCode.TOKEN_EXPIRED);
 				
 			}else{ // 有这个token，也没有过期
 				
@@ -177,7 +176,7 @@ public class UserInfoServiceImpl implements UserInfoService{
 		NbUser checkUser = userInfoDao.findByUsernameAndAppid(username, appID);
 		if( checkUser != null ){ //用户名已经存在
 			nbReturn nbRet = new nbReturn();
-			nbRet.setError(nbReturn.ReturnCode.USERNAME_ALREADY_EXIST);
+			nbRet.setError(ReturnCode.USERNAME_ALREADY_EXIST);
 			return nbRet;
 		}
 		//用户名可以用，开始注册用户
@@ -211,7 +210,7 @@ public class UserInfoServiceImpl implements UserInfoService{
 		nbReturn nbRet = new nbReturn();
 		
 		if( jsonMap == null ){
-			nbRet.setError(nbReturn.ReturnCode.NECESSARY_PARAMETER_IS_NULL);
+			nbRet.setError(ReturnCode.NECESSARY_PARAMETER_IS_NULL);
 			return nbRet;
 		}
 		
@@ -224,7 +223,7 @@ public class UserInfoServiceImpl implements UserInfoService{
 		
 		
 		if( !password.equals(passwordConfirm) ){
-			nbRet.setError(nbReturn.ReturnCode.CONFIRMPASSWORD_NOT_SAME_WITH_PASSWORD);
+			nbRet.setError(ReturnCode.CONFIRMPASSWORD_NOT_SAME_WITH_PASSWORD);
 			return nbRet;
 		}
 		return RegisterUser(username, password, mobile, email, appID);
@@ -232,7 +231,7 @@ public class UserInfoServiceImpl implements UserInfoService{
 
 	@Override
 	public nbReturn exUrlGetToken(String providerCode) {
-		// TODO Auto-generated method stub
+		// TODO:SSO:要到外部用户信息中心获取TOKEN以便得到外部用户信息中心的数据
 //		nbReturn nbRet = userExternalCallDao.findByProviderCode(providerCode);
 //		if( nbRet.isSuccess() ){
 //			NbUserExternalCall nbUserExternalCall = (NbUserExternalCall)nbRet.getObject();
@@ -247,14 +246,60 @@ public class UserInfoServiceImpl implements UserInfoService{
 	@Override
 	public nbReturn exUrlVerifyUser(String username, String password,
 			String providerCode) {
-		// TODO Auto-generated method stub
+		// TODO：SSO:要到外部用户信息中心获取
 		return null;
 	}
 
 	@Override
 	public nbReturn exUrlGetUserInfo(String token, String providerCode) {
-		// TODO Auto-generated method stub
+		// TODO:SSO:要到尾部用户信息中心获取用户信息
 		return null;
+	}
+
+	/**
+	 * 用于更新用户密码
+	 * 
+	 * @param jsonMap 经过解析的json格式的参数
+	 * @return 返回成功失败信息
+	 * 
+	 */
+	@Override
+	public nbReturn resetPassword(Map<String, Object> jsonMap) throws Exception{
+		nbReturn nbRet = new nbReturn();
+		String username = (String) jsonMap.get(ParameterDefine.USERNAME);
+		String password = (String) jsonMap.get(ParameterDefine.PASSWORD);
+		String passwordConfirm = (String) jsonMap.get(ParameterDefine.PASSWORDCONFIRM);
+		String appID = (String) jsonMap.get(ParameterDefine.APPID);
+		
+		if( !password.equals(passwordConfirm) ){
+			nbRet.setError(ReturnCode.CONFIRMPASSWORD_NOT_SAME_WITH_PASSWORD);
+			return nbRet;
+		}
+		return resetPassword(appID, username, password);
+	}
+
+	/**
+	 * 用于更新用户密码
+	 * 
+	 * @param appID 
+	 * @param username 
+	 * @param password 
+	 * @return 返回成功失败信息
+	 * 
+	 */
+	@Override
+	public nbReturn resetPassword(String appID, String username, String password) throws Exception {
+		
+		nbReturn nbRet = new nbReturn();
+		NbUser checkUser = userInfoDao.findByUsernameAndAppid(username, appID);
+		if( checkUser == null ){ //用户不存在
+			nbRet.setError(ReturnCode.NO_SUCH_USER);
+			return nbRet;
+		}
+		checkUser.setPassword(nbStringUtil.encryptMD5(password));
+		userInfoDao.update(checkUser);
+		
+		return nbRet;
 	}
 
 }

@@ -1,7 +1,8 @@
-package database.basicFunctions.dao;
+package database.dao;
 
 import org.springframework.stereotype.Repository;
 
+import common.definitions.ReturnCode;
 import common.helper.nbReturn;
 import common.helper.nbStringUtil;
 import database.common.BaseDaoImpl;
@@ -22,7 +23,7 @@ public class ApplicationsDaoImpl extends BaseDaoImpl<NbApplications> implements 
 		
 		if( nbApplication == null ){//没有找到这个applicationID
 			
-			nbRet.setError(nbReturn.ReturnCode.APPLICATION_ID_NOT_FOUND);
+			nbRet.setError(ReturnCode.APPLICATION_ID_NOT_FOUND);
 			return nbRet;
 			
 		}else{//找到了这个ApplicationID，开始生成signature

@@ -10,6 +10,8 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 
+import common.definitions.ParameterDefine;
+
 
 
 /**
@@ -503,8 +505,9 @@ public class StringUtil extends StringUtils {
 		} else {
 			birth = cardId.substring(6, 14);
 		}
-		SimpleDateFormat sf1 = new SimpleDateFormat("yyyyMMdd");
-	    SimpleDateFormat sf2 = new SimpleDateFormat("yyyy-MM-dd");
+		
+		SimpleDateFormat sf1 = new SimpleDateFormat(ParameterDefine.DATETIME_FORMATE002);
+	    SimpleDateFormat sf2 = new SimpleDateFormat(ParameterDefine.DATETIME_FORMATE003);
 	    Date birthday = null;
 	    String str = null;
 		try {

@@ -8,11 +8,12 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import main.entry.api.ParameterDefine;
+import common.definitions.ParameterDefine;
+import common.definitions.ReturnCode;
 import common.helper.CommonHelper;
 import common.helper.nbReturn;
 import common.helper.nbStringUtil;
-import database.basicFunctions.dao.PhoneCheckCodeDao;
+import database.dao.PhoneCheckCodeDao;
 import database.models.NbPhoneCheckcode;
 
 public class ApplicationServiceUtils {
@@ -57,7 +58,8 @@ public class ApplicationServiceUtils {
 			//以上创建发送请求成功，先保存到数据库
 		}
 		
-		nbReturn nbRet = CommonHelper.sendNotification(PhoneNumber, theCodeToBeSend);
+		//TODO:这里要通过短信接口发送验证码
+		nbReturn nbRet = CommonHelper.sendSMSNotification(PhoneNumber, theCodeToBeSend);
 		//实际发送出去
 		
 		cal = Calendar.getInstance();
@@ -149,14 +151,14 @@ public class ApplicationServiceUtils {
 		
 		nbReturn nbRet = new nbReturn();
 		
-		if( pccList != null || pccList.size() == 0){
-			nbRet.setError(nbReturn.ReturnCode.REQUESTED_PHONE_CODE_NOT_FOUND);
+		if( pccList == null || pccList.size() == 0){
+			nbRet.setError(ReturnCode.REQUESTED_PHONE_CODE_NOT_FOUND);
 			return nbRet;
 		}
 		for( NbPhoneCheckcode pcc : pccList){
 			
 			if( pcc.getSendStatus() == 3 || pcc.getSendStatus() == 4){
-				nbRet.setError(nbReturn.ReturnCode.REQUESTED_PHONE_CODE_EXPIRED);
+				nbRet.setError(ReturnCode.REQUESTED_PHONE_CODE_EXPIRED);
 			}
 			
 			if( pcc.getSendStatus() == 1 ){//发送成功
@@ -169,7 +171,7 @@ public class ApplicationServiceUtils {
 					pcc.setSendStatus(4);
 					phoneCheckCodeDao.update(pcc);
 				}else{ // 没过期
-					nbRet.setError(nbReturn.ReturnCode._SUCCESS);
+					nbRet.setError(ReturnCode._SUCCESS);
 					pcc.setSendStatus(3);
 					phoneCheckCodeDao.update(pcc);
 				}

@@ -1,4 +1,4 @@
-package common.helper;
+package common.filters;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -12,6 +12,8 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+
+import common.definitions.ParameterDefine;
 
 public class nbHTMLSecurityFilter implements Filter{
 
@@ -38,18 +40,29 @@ public class nbHTMLSecurityFilter implements Filter{
 		
 		System.out.println("nbHTMLSecurityFilter: "+servletPath+" isExcludedPath:"+isExcludedPath);
 		
+		boolean isFiltered = false;
 		//需要拦截的
 		if( !isExcludedPath ){
 			
 			HttpSession session = httpServletRequest.getSession();
-			Boolean isAuthorized = false;
-			//verifyToken(tokenKey);
+			boolean isAuthorized = false;
 			
-			// TODO Auto-generated method stub
-	
+			if( session.getAttribute(ParameterDefine.SESSION_USERID) == null ){
+				isAuthorized = false;
+			}else{
+				isAuthorized = true;
+			}
+			
+			if( !isAuthorized ){
+				
+				session.setAttribute(ParameterDefine.SESSION_NEXT_URL_AFTER_LOGIN, 
+									 httpServletRequest.getRequestURL()+"?"+ httpServletRequest.getQueryString());
+				isFiltered = true;
+				request.getRequestDispatcher("/openWeb/login.html").forward(request, response);
+			}
 		}
-		
-		chain.doFilter(request, response);
+		if( !isFiltered )
+			chain.doFilter(request, response);
 	}
 
 	@Override

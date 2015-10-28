@@ -16,4 +16,6 @@ public interface UserInfoService {//extends ScheduledTaskInterface{
 	public nbReturn exUrlVerifyUser(String username, String password, String providerCode);
 	public nbReturn exUrlGetUserInfo(String token, String providerCode);
 	public nbReturn RegisterUser(Map<String, Object> jsonMap) throws Exception;
+	public nbReturn resetPassword(Map<String, Object> jsonMap) throws Exception;
+	public nbReturn resetPassword(String appID, String username, String password) throws Exception;
 }

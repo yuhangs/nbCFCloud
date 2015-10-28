@@ -5,6 +5,7 @@ import java.util.Random;
 
 import com.alibaba.fastjson.serializer.JSONSerializer;
 import com.alibaba.fastjson.serializer.SerializeWriter;
+import common.SMSUtils.SMS189Utils;
 
 
 public class CommonHelper {
@@ -36,7 +37,7 @@ public class CommonHelper {
 	 */
 	public static nbReturn setAccessLog(String appID, String clientUUID, Date timeStamp, String signature){
 		nbReturn nbRet = new nbReturn();
-		//TODO
+		//TODO:把访问记录记录到数据库中
 		return nbRet;
 	}
 	
@@ -49,7 +50,7 @@ public class CommonHelper {
 	 */
 	public static nbReturn setAccessLog(String appID, String token, nbReturn accessResult){
 		nbReturn nbRet = new nbReturn();
-		//TODO
+		//TODO:把访问记录记录到数据库中
 		return nbRet;
 	}
 	
@@ -66,6 +67,22 @@ public class CommonHelper {
 			rand[i] = (char)(randoom.nextInt() % 9 + '0');
 		}
 		return String.valueOf(rand);
+	}
+
+	/**
+	 * 发送一条短信出去
+	 * @param phoneNumber
+	 * @param theCodeToBeSend
+	 * @return
+	 */
+	public static nbReturn sendSMSNotification(String phoneNumber,String theCodeToBeSend) {
+		
+		nbReturn nbRet = new nbReturn();
+		
+		SMS189Utils sms189Utils = new SMS189Utils();
+		nbRet = sms189Utils.sendTheSMS(phoneNumber, theCodeToBeSend);
+		
+		return nbRet;
 	}
 	
 }

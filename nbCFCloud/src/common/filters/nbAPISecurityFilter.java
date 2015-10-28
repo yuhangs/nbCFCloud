@@ -1,4 +1,4 @@
-package common.helper;
+package common.filters;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -13,10 +13,17 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
+import common.definitions.ParameterDefine;
+import common.definitions.ReturnCode;
+import common.helper.ApplicationContextProvider;
+import common.helper.CommonHelper;
+import common.helper.HttpWebIOHelper;
+import common.helper.nbReturn;
 import database.models.NbTokenPublisher;
 import service.basicFunctions.UserInfoService;
 
@@ -49,11 +56,11 @@ public class nbAPISecurityFilter implements Filter{
 		
 		String tokenKey = null;
 		String appID = null;
-		if( getParameter.get("token") != null )
-			tokenKey = getParameter.get("token")[0];
+		if( getParameter.get(ParameterDefine.TOKEN) != null )
+			tokenKey = getParameter.get(ParameterDefine.TOKEN)[0];
 		
-		if( getParameter.get("appID") != null )
-			appID = getParameter.get("appID")[0];
+		if( getParameter.get(ParameterDefine.APPID) != null )
+			appID = getParameter.get(ParameterDefine.APPID)[0];
 		
 		
 		String servletPath = httpServletRequest.getServletPath();
@@ -68,13 +75,14 @@ public class nbAPISecurityFilter implements Filter{
 		
 		System.out.println("nbAPISecurityFilter: "+servletPath+" isExcludedPath:"+isExcludedPath);
 		
+		HttpSession session = httpServletRequest.getSession();
 		//需要拦截的
 		if( !isExcludedPath ){
 			nbReturn nbRet = new nbReturn();
 			
 			if( tokenKey == null || appID == null ){
 				//需要验证token, tokenKey appID都不为空
-				nbRet.setError(nbReturn.ReturnCode.NEED_TOKEN_APPID_FOR_AUTH);
+				nbRet.setError(ReturnCode.NEED_TOKEN_APPID_FOR_AUTH);
 				HttpWebIOHelper.printReturnJson(nbRet, (HttpServletResponse) response);
 				return;
 			}
@@ -91,7 +99,7 @@ public class nbAPISecurityFilter implements Filter{
 				HttpWebIOHelper.printReturnJson(nbRet, (HttpServletResponse) response);
 				return;
 			}
-			request.setAttribute("filterGetTokenPublisher", (NbTokenPublisher)nbRet.getObject());
+			session.setAttribute(ParameterDefine.SESSION_TOKEN_INFO, (NbTokenPublisher)nbRet.getObject());
 		}
 			
 		//验证token成功

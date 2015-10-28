@@ -7,6 +7,8 @@ import java.util.Date;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.util.DigestUtils;
 
+import common.definitions.ParameterDefine;
+
 public class nbStringUtil {
 
 	
@@ -65,13 +67,13 @@ public class nbStringUtil {
 	}
 	
 	public static String DateTime2String(Date theDate){
-		SimpleDateFormat sf2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		SimpleDateFormat sf2 = new SimpleDateFormat(ParameterDefine.DATETIME_FORMATE001);
 		return sf2.format(theDate);
 	}
 	
 	public static Date String2DateTime(String dateString) throws ParseException{
 		
-		SimpleDateFormat sf2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		SimpleDateFormat sf2 = new SimpleDateFormat(ParameterDefine.DATETIME_FORMATE001);
 		return sf2.parse(dateString);
 	}
 	
