@@ -9,8 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import service.basicFunctions.ApplicationsService;
-import service.basicFunctions.UserInfoService;
+import service.major.ApplicationsService;
+import service.major.ProjectService;
+import service.major.UserInfoService;
 import common.definitions.ParameterDefine;
 import common.helper.HttpWebIOHelper;
 import common.helper.nbReturn;
@@ -24,6 +25,8 @@ public class OpenAPIs {
 	private UserInfoService userInfoService;
 	@Autowired
 	private ApplicationsService applicationsService;
+	@Autowired
+	private ProjectService projectService;
 
 	
 	 /**
@@ -167,13 +170,13 @@ public class OpenAPIs {
      * @param SendReasonCommnets
      * @param PictureCode 为防止机器人可以使用图片验证码，也可以为空
      * @param PictureCodeAffairId 为防止机器人可以使用图片验证码，也可以为空
-     * @return retCode
-     * @return retMessage
-     * @return retContent{
-     * @return   PhoneCheckAffairId:
-     * @return   PhoneCheckCodeLifecycle:
-     * @return   PhoneCheckCodeExpireTime:
-     * @return }
+     * @return retCode<br/>
+     * retMessage<br/>
+     * retContent{<br/>
+     * &nbsp&nbsp&nbsp PhoneCheckAffairId:<br/>
+     * &nbsp&nbsp&nbsp PhoneCheckCodeLifecycle:<br/>
+     * &nbsp&nbsp&nbsp PhoneCheckCodeExpireTime:<br/>
+     * }
      */
     @RequestMapping(value = "/openAPI/utils/sendUserPhoneCheckCode") 
     public void utils_sendUserPhoneCheckCode(HttpServletResponse response,HttpServletRequest request) throws Exception{
@@ -271,8 +274,43 @@ public class OpenAPIs {
     }
     
     
+    /**
+     * 获取产品列表
+     * @param APPID 合伙人的APPID
+     * @param ClientUUID 客户UUID
+     * @param TimeStamp 时间戳
+     * @param Signature 以上内容的含APPSecretKey的签名<br/>//以上内容可以为空<br/>
+     * @param SearchCondition {
+     * @param   startTime :
+     * @param   endTime :
+     * @param   itemsPerPage :
+     * @param   startPage :
+     * @param   endPage :
+     * @param   keyWords :
+     * @param   statusCodeWhiteFilter[] {
+     * @param      1;
+     * @param      3;
+     * @param   }
+     * @param   statusCodeBlackFilter[] {
+     * @param      2;
+     * @param      4;
+     * @param   }
+     * @param } 
+     */
     @RequestMapping(value = "/openAPI/product/getProjectList") 
     public void product_getProjectList(HttpServletResponse response,HttpServletRequest request) throws Exception{
+    	
+    	Map<String, Object> jsonMap = HttpWebIOHelper.servletInputStream2JsonMap(request);
+    	
+		nbReturn nbRet = new nbReturn();
+		nbRet = applicationsService.checkSignature(jsonMap, false);
+		if( !nbRet.isSuccess() ){//验证signature 失败了
+			HttpWebIOHelper.printReturnJson(nbRet, response);
+			return;
+		}
+		
+		nbRet = projectService.searchAndFetchProjectList(jsonMap);
+		
     	
     }
     @RequestMapping(value = "/openAPI/product/getProjectPresentMaterials") 

@@ -1,4 +1,4 @@
-package service.basicFunctions;
+package service.major;
 
 import java.util.Calendar;
 import java.util.Date;

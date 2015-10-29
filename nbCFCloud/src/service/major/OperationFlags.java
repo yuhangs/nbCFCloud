@@ -1,4 +1,4 @@
-package service.basicFunctions;
+package service.major;
 
 public enum OperationFlags {
 	USER_EXTRA_ATTRIBUTE_CONFIG_ADD,

@@ -13,7 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import service.basicFunctions.UserInfoService;
+import service.major.UserInfoService;
 import common.helper.HttpWebIOHelper;
 import common.helper.nbReturn;
 import common.helper.nbStringUtil;

@@ -25,7 +25,7 @@ import common.helper.CommonHelper;
 import common.helper.HttpWebIOHelper;
 import common.helper.nbReturn;
 import database.models.NbTokenPublisher;
-import service.basicFunctions.UserInfoService;
+import service.major.UserInfoService;
 
 public class nbAPISecurityFilter implements Filter{
 

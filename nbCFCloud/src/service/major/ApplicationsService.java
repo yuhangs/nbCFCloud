@@ -1,4 +1,4 @@
-package service.basicFunctions;
+package service.major;
 
 import java.util.Map;
 
@@ -14,4 +14,5 @@ public interface ApplicationsService {
 	public nbReturn sendPhoneCode(String appId, String PhoneNumber,	String SendReasonCode, String SendReasonCommnets);
 	public nbReturn checkPhoneCode(Map<String, Object> jsonMap, boolean parameterNullAsOK);
 	public nbReturn checkPhoneCode(String phoneCheckAffairid, String phoneCheckCode);
+	public nbReturn checkSignature(Map<String, Object> jsonMap, boolean parameterNullAsOK)throws Exception;
 }

@@ -8,3 +8,4 @@ public interface ApplicationsDao extends BaseDao<NbApplications>{
 
 	public nbReturn generateSignature(String appID, String timeStamp, String uuid) throws Exception;
 }
+

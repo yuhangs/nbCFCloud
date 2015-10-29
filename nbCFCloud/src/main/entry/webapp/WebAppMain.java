@@ -12,7 +12,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import common.helper.nbReturn;
 import common.helper.nbStringUtil;
-import service.basicFunctions.UserInfoService;
+import service.major.UserInfoService;
 import database.models.NbTokenPublisher;
 import database.models.NbUser;
 

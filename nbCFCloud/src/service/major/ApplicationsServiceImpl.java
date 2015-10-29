@@ -1,4 +1,4 @@
-package service.basicFunctions;
+package service.major;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -249,6 +249,41 @@ public class ApplicationsServiceImpl implements ApplicationsService {
 		}
 	
 		return checkPhoneCode(phoneCheckAffairid, phoneCheckCode);
+	}
+
+	/**
+     * 检查签名是否正确。签名只针对以下内容进行签名，不对业务内容进行签名
+     * @param jsonMap json解析出来的Map格式内容
+     * @param parameterNullAsOK 空的话是否OK
+     * @return nbReturn 是否成功，以及错误信息
+	 * @throws Exception 
+     */
+	@Override
+	public nbReturn checkSignature(Map<String, Object> jsonMap,boolean parameterNullAsOK) throws Exception {
+		nbReturn nbRet = new nbReturn();
+		if( jsonMap == null ){
+			if( !parameterNullAsOK ){
+				nbRet.setError(ReturnCode.NECESSARY_PARAMETER_IS_NULL);
+			}
+			return nbRet;
+		}
+		
+		String appID = (String) jsonMap.get(ParameterDefine.APPID);
+		String applyDateTime = (String) jsonMap.get(ParameterDefine.TIMESTAMP);
+		String clientUuid = (String) jsonMap.get(ParameterDefine.CLIENTUUID);
+		String appSignature = (String) jsonMap.get(ParameterDefine.SIGNATURE);
+		
+		//只有一个必要参数是空的，并且【参数为空也OK】的话就直接返回success
+		if( appID == null || applyDateTime == null || clientUuid ==null || appSignature == null){
+			if( parameterNullAsOK )
+				return nbRet;
+			else{
+				nbRet.setError(ReturnCode.NECESSARY_PARAMETER_IS_NULL);
+				return nbRet;
+			}
+		}
+			
+		return checkSignature(appID, applyDateTime, clientUuid, appSignature);
 	}
 
 	
