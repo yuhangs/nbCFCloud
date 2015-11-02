@@ -287,6 +287,11 @@ public class OpenAPIs {
      * @param   startPage :
      * @param   endPage :
      * @param   keyWords :
+     * @param   searchOrderby{
+     *             searchOrderByTime;
+     *             searchOrderById;
+     *             }
+     * @param   searchOrder: searchOrderDesc; searchOrderAsc;
      * @param   statusCodeWhiteFilter[] {
      * @param      1;
      * @param      3;
@@ -303,7 +308,8 @@ public class OpenAPIs {
     	Map<String, Object> jsonMap = HttpWebIOHelper.servletInputStream2JsonMap(request);
     	
 		nbReturn nbRet = new nbReturn();
-		nbRet = applicationsService.checkSignature(jsonMap, false);
+		//暂时不允许APPID为空，不可以查询非本公司的产品
+		nbRet = applicationsService.checkSignature(jsonMap);
 		if( !nbRet.isSuccess() ){//验证signature 失败了
 			HttpWebIOHelper.printReturnJson(nbRet, response);
 			return;

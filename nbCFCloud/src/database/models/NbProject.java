@@ -33,6 +33,11 @@ public class NbProject implements Serializable , nbBaseModel{
 	@Lob
 	@Column(nullable=false)
 	private String projectName;
+	
+	@Lob
+	@Column(nullable=false)
+	private String projectDescription;
+	
 
 	@Column(nullable=false, length=64)
 	private String projectTag;
@@ -43,6 +48,9 @@ public class NbProject implements Serializable , nbBaseModel{
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(nullable=false)
 	private Date startDate;
+	
+	@Column(nullable=false, length=64)
+	private String applicationId;
 
 	//bi-directional many-to-one association to NbProjectInvestRule
 	@OneToMany(mappedBy="nbProject")
@@ -73,6 +81,14 @@ public class NbProject implements Serializable , nbBaseModel{
 
 	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
+	}
+
+	public String getProjectDescription() {
+		return projectDescription;
+	}
+
+	public void setProjectDescription(String projectDescription) {
+		this.projectDescription = projectDescription;
 	}
 
 	public String getProjectName() {
@@ -109,6 +125,14 @@ public class NbProject implements Serializable , nbBaseModel{
 
 	public List<NbProjectInvestRule> getNbProjectInvestRules() {
 		return this.nbProjectInvestRules;
+	}
+
+	public String getApplicationId() {
+		return applicationId;
+	}
+
+	public void setApplicationId(String applicationId) {
+		this.applicationId = applicationId;
 	}
 
 	public void setNbProjectInvestRules(List<NbProjectInvestRule> nbProjectInvestRules) {

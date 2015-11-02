@@ -25,10 +25,28 @@ public class ParameterDefine {
 	public static final String SENDREASONCODE ="SendReasonCode";
 	public static final String SENDREASONCOMMENTS ="SendReasonCommnets";
 	public static final String PHONECHECKCODE ="PhoneCheckCode";
+	public static final String SEARCHCONDITION ="SearchCondition";
+	public static final String STARTTIME ="startTime";
+	public static final String ENDTIME ="endTime";
+	public static final String ITEMSPERPAGE ="itemsPerPage";
+	public static final String STARTPAGE ="startPage";
+	public static final String ENDPAGE ="endPage";
+	public static final String KEYWORDS ="keyWords";
+	public static final String STATUSCODEWHITELIST ="statusCodeWhiteFilter";
+	public static final String STATUSCODEBLACKLIST ="statusCodeBlackFilter";
+	public static final String SEARCHORDERBY ="searchOrderBy";
+	public static final String SEARCHORDER ="searchOrder";
+	public static final String SEARCHORDERBY_TIME ="searchOrderByTime";
+	public static final String SEARCHORDERBY_ID ="searchOrderById";
+	public static final String SEARCHORDER_DESC ="searchOrderDesc";
+	public static final String SEARCHORDER_ASC ="searchOrderAsc";
+
+	
 	public static final String LONG_CALL_PARA_FORMAT_JSON ="json";
 	public static final String LONG_CALL_PARA_FORMAT_XFORM ="xformurlencode";
 	public static final String LONG_CALL_METHOD_GET ="GET";
 	public static final String LONG_CALL_METHOD_POST ="POST";
+	
 	public static final String HTTP_HEADER_PART ="header";
 	public static final String HTTP_CONTENT_PART ="content";
 	
